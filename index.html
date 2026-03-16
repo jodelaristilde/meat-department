@@ -463,21 +463,17 @@
   });
 
   // ── Footswitch / Keyboard support ───────────────────────────────────────
-  // PCsensor footswitch acts as a USB keyboard. Program it to send one of
-  // these keys using PCsensor's ElfKey software:
-  //   F9  ← recommended (no browser conflicts)
-  //   F13–F24 also work great
-  //   Space or Enter also supported
-  document.addEventListener('keydown', function(e) {
-    // Ignore if typing in the number input box
+  // PCsensor FS22PW programmed to F8 via ElfKey software.
+  // useCapture:true catches the key before the browser handles it.
+  window.addEventListener('keydown', function(e) {
     if (document.activeElement && document.activeElement.id === 'customInput') return;
-
-    const triggerKeys = ['F9','F13','F14','F15','F16',' ','Enter'];
+    const triggerKeys = ['F8','F9','F13','F14','F15','F16',' ','Enter'];
     if (triggerKeys.includes(e.key)) {
       e.preventDefault();
+      e.stopPropagation();
       nextTicket();
     }
-  });
+  }, true);
 </script>
 </body>
 </html>
