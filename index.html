@@ -6,6 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Food Fair – Meat Department</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <link rel="manifest" href="/manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
@@ -259,6 +261,23 @@
 <script>
   let current = 0, started = false;
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyBDi6oEKmZ6B6r9_wPk8nMIzr23hEX-5Y8",
+    authDomain: "foodfair-meat.firebaseapp.com",
+    databaseURL: "https://foodfair-meat-default-rtdb.firebaseio.com",
+    projectId: "foodfair-meat",
+    storageBucket: "foodfair-meat.firebasestorage.app",
+    messagingSenderId: "183879584210",
+    appId: "1:183879584210:web:52daf9dac7e40f8dd9a00b",
+    measurementId: "G-7XZ2DWHFN9"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  function syncNowServing(numStr) {
+    db.ref('meat/nowServing').set({ number: numStr, updated: Date.now() });
+  }
+
   const onesEN = ['','one','two','three','four','five','six','seven','eight','nine',
     'ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
   const tensEN = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
@@ -420,6 +439,7 @@
     document.getElementById('numDisplay').textContent = pad(current);
     flash(); announceAll(current);
     showStatus('🔔 Calling number ' + pad(current));
+    syncNowServing(pad(current));
   }
 
   function prevTicket() {
@@ -428,6 +448,7 @@
     document.getElementById('numDisplay').textContent = pad(current);
     flash(); announceAll(current);
     showStatus('◀ Back to number ' + pad(current));
+    syncNowServing(pad(current));
   }
 
   function repeatAnnounce() {
