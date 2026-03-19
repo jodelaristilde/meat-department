@@ -463,23 +463,22 @@
     document.getElementById('customInput').value = '';
     speechSynthesis && speechSynthesis.cancel();
     showStatus('Counter reset');
-    // Reset Firebase now serving
     db.ref('meat/nowServing').set({ number: '000', updated: Date.now() });
   }
 
-  // Auto reset at 3:00 AM every day
-  function scheduleAutoReset() {
-    const now = new Date();
-    const next3am = new Date();
-    next3am.setHours(3, 0, 0, 0);
-    if (next3am <= now) next3am.setDate(next3am.getDate() + 1);
-    const msUntil3am = next3am - now;
-    setTimeout(() => {
-      resetCounter();
-      scheduleAutoReset();
-    }, msUntil3am);
+  // Auto reset daily - checks on page load and every minute
+  function checkDailyReset() {
+    const today = new Date().toDateString();
+    db.ref('meat/lastResetDate').once('value', snap => {
+      const lastReset = snap.val();
+      if (lastReset !== today) {
+        resetCounter();
+        db.ref('meat/lastResetDate').set(today);
+      }
+    });
   }
-  scheduleAutoReset();
+  checkDailyReset();
+  setInterval(checkDailyReset, 60000);
 
   function setNumber() {
     const v = parseInt(document.getElementById('customInput').value);
