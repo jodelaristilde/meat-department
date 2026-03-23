@@ -217,6 +217,44 @@
     white-space: nowrap; transition: all 0.15s;
   }
   .btn-set:hover { background: #b8860b; color: white; }
+  .past-numbers-box {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2vh;
+    flex-shrink: 0;
+  }
+  .past-numbers-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(1rem, 3vw, 5rem);
+    font-weight: 600;
+    color: #3a6ea8;
+    letter-spacing: 0.15vw;
+    text-transform: uppercase;
+    margin-bottom: 0.8vh;
+  }
+  .past-numbers-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8vw;
+    min-height: 3rem;
+  }
+  .past-num-chip {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(1.8rem, 5.5vw, 9rem);
+    font-weight: 700;
+    color: #3a6ea8;
+    border: 0.5vw solid #3a6ea8;
+    border-radius: 1.2vw;
+    padding: 0.05em 0.3em;
+    line-height: 1.1;
+  }
+  .past-num-sep {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 6.5rem);
+    font-weight: 700;
+    color: #3a6ea8;
+  }
   .status {
     font-size: clamp(0.45rem, 0.65vw, 0.85rem); font-weight: 700;
     color: var(--gold); letter-spacing: 1px; text-transform: uppercase;
@@ -254,12 +292,16 @@
     <div class="serving-label">NOW SERVING</div>
     <div class="big-number" id="numDisplay">---</div>
     <div class="serving-langs">AHORA SIRVIENDO &nbsp;•&nbsp; KOUNYE A NAP SEVI NUMERO</div>
+    <div class="past-numbers-box">
+      <div class="past-numbers-label">PAST NUMBERS &nbsp;•&nbsp; NÚMEROS ANTERIORES &nbsp;•&nbsp; NIMEWO PASE YO</div>
+      <div class="past-numbers-display" id="pastNumbersDisplay"></div>
+    </div>
   </div>
 
 </div>
 
 <script>
-  let current = 0, started = false;
+  let current = 0, started = false, pastNumbers = [];
 
   const firebaseConfig = {
     apiKey: "AIzaSyBDi6oEKmZ6B6r9_wPk8nMIzr23hEX-5Y8",
@@ -430,9 +472,23 @@
     el._t = setTimeout(() => el.textContent = '\u00a0', 3800);
   }
 
+  function renderPastNumbers() {
+    const el = document.getElementById('pastNumbersDisplay');
+    if (!el) return;
+    if (pastNumbers.length === 0) { el.innerHTML = ''; return; }
+    const parts = pastNumbers.map(n => `<span class="past-num-chip">${n}</span>`);
+    el.innerHTML = parts.join('<span class="past-num-sep"> &bull; </span>');
+  }
+
   function pad(n) { return String(n).padStart(3,'0'); }
 
   function nextTicket() {
+    if (started && current > 0) {
+      pastNumbers.push(pad(current));
+      if (pastNumbers.length > 3) pastNumbers.shift();
+      db.ref('meat/pastNumbers').set(pastNumbers);
+      renderPastNumbers();
+    }
     if (!started) { started = true; if (current === 0) current = 1; }
     else current++;
     if (current > 999) current = 1;
@@ -458,12 +514,14 @@
   }
 
   function resetCounter() {
-    current = 0; started = false;
+    current = 0; started = false; pastNumbers = [];
     document.getElementById('numDisplay').textContent = '---';
     document.getElementById('customInput').value = '';
+    renderPastNumbers();
     speechSynthesis && speechSynthesis.cancel();
     showStatus('Counter reset');
     db.ref('meat/nowServing').set({ number: '000', updated: Date.now() });
+    db.ref('meat/pastNumbers').set([]);
   }
 
   // Auto reset daily - checks on page load and every minute
@@ -474,6 +532,25 @@
       if (lastReset !== today) {
         resetCounter();
         db.ref('meat/lastResetDate').set(today);
+      } else {
+        // Same day — restore current number from Firebase
+        db.ref('meat/nowServing').once('value', snap2 => {
+          const saved = snap2.val();
+          if (saved && saved.number && saved.number !== '000') {
+            const n = parseInt(saved.number, 10);
+            if (!isNaN(n) && n > 0) {
+              current = n;
+              started = true;
+              document.getElementById('numDisplay').textContent = pad(n);
+            }
+          }
+          // Also restore past numbers
+          db.ref('meat/pastNumbers').once('value', snap3 => {
+            const past = snap3.val();
+            if (Array.isArray(past)) pastNumbers = past;
+            renderPastNumbers();
+          });
+        });
       }
     });
   }
