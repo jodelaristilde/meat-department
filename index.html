@@ -147,7 +147,7 @@
     flex-shrink: 0;
     width: 100%;
     text-align: center;
-    padding: 0.5vh 1vw 1.5vh;
+    padding: 0.5vh 1vw 0.5vh;
     overflow: hidden;
   }
 
@@ -219,39 +219,43 @@
   .btn-set:hover { background: #b8860b; color: white; }
   .past-numbers-box {
     width: 100%;
+    border-top: 0.4vw solid #3a6ea8;
+    border-bottom: 0.4vw solid #3a6ea8;
     text-align: center;
-    margin-bottom: 2vh;
+    padding: 1.2vh 1vw 1.5vh;
     flex-shrink: 0;
   }
   .past-numbers-label {
     font-family: 'Oswald', sans-serif;
-    font-size: clamp(1rem, 3vw, 5rem);
-    font-weight: 600;
+    font-size: clamp(1rem, 2.5vw, 4.5rem);
+    font-weight: 700;
     color: #3a6ea8;
     letter-spacing: 0.15vw;
     text-transform: uppercase;
-    margin-bottom: 0.8vh;
+    margin-bottom: 1vh;
+    white-space: nowrap;
+    overflow: hidden;
   }
   .past-numbers-display {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.8vw;
+    gap: 1.5vw;
     min-height: 3rem;
   }
   .past-num-chip {
     font-family: 'Oswald', sans-serif;
-    font-size: clamp(1.8rem, 5.5vw, 9rem);
+    font-size: clamp(2rem, min(14vw, 16vh), 18rem);
     font-weight: 700;
     color: #3a6ea8;
     border: 0.5vw solid #3a6ea8;
-    border-radius: 1.2vw;
-    padding: 0.05em 0.3em;
+    border-radius: 3vw;
+    padding: 0.02em 0.3em;
     line-height: 1.1;
   }
   .past-num-sep {
     font-family: 'Oswald', sans-serif;
-    font-size: clamp(1.5rem, 4vw, 6.5rem);
+    font-size: clamp(1.5rem, 8vw, 12rem);
     font-weight: 700;
     color: #3a6ea8;
   }
@@ -290,8 +294,8 @@
 
   <div class="display-area">
     <div class="serving-label">NOW SERVING</div>
-    <div class="big-number" id="numDisplay">---</div>
     <div class="serving-langs">AHORA SIRVIENDO &nbsp;•&nbsp; KOUNYE A NAP SEVI NUMERO</div>
+    <div class="big-number" id="numDisplay">---</div>
     <div class="past-numbers-box">
       <div class="past-numbers-label">PAST NUMBERS &nbsp;•&nbsp; NÚMEROS ANTERIORES &nbsp;•&nbsp; NIMEWO PASE YO</div>
       <div class="past-numbers-display" id="pastNumbersDisplay"></div>
