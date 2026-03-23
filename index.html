@@ -161,7 +161,8 @@
     transition: transform 0.25s ease, color 0.25s ease;
     width: 100%;
     flex: 1;
-    font-size: clamp(8rem, min(62vw, 72vh), 130rem);
+    min-height: 0;
+    font-size: clamp(6rem, min(55vw, 40vh), 100rem);
     letter-spacing: -0.02em;
     padding: 0;
     transform-origin: center;
@@ -222,17 +223,17 @@
     border-top: 0.4vw solid #3a6ea8;
     border-bottom: 0.4vw solid #3a6ea8;
     text-align: center;
-    padding: 1.2vh 1vw 1.5vh;
+    padding: 1vh 1vw 1.2vh;
     flex-shrink: 0;
   }
   .past-numbers-label {
     font-family: 'Oswald', sans-serif;
-    font-size: clamp(2rem, 5vw, 9rem);
+    font-size: clamp(1.2rem, min(5vw, 5vh), 9rem);
     font-weight: 700;
     color: #3a6ea8;
     letter-spacing: 0.15vw;
     text-transform: uppercase;
-    margin-bottom: 1vh;
+    margin-bottom: 0.8vh;
     white-space: nowrap;
     overflow: hidden;
   }
@@ -241,11 +242,11 @@
     align-items: center;
     justify-content: center;
     gap: 1.5vw;
-    min-height: 3rem;
+    min-height: 0;
   }
   .past-num-chip {
     font-family: 'Oswald', sans-serif;
-    font-size: clamp(2rem, min(14vw, 16vh), 18rem);
+    font-size: clamp(2rem, min(13vw, 14vh), 18rem);
     font-weight: 700;
     color: #3a6ea8;
     border: 0.5vw solid #3a6ea8;
@@ -255,7 +256,7 @@
   }
   .past-num-sep {
     font-family: 'Oswald', sans-serif;
-    font-size: clamp(1.5rem, 8vw, 12rem);
+    font-size: clamp(1.5rem, min(7vw, 8vh), 12rem);
     font-weight: 700;
     color: #3a6ea8;
   }
